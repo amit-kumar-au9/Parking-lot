@@ -16,12 +16,36 @@ class ParkingLot:
             if values != []:
                 print(key, values[0], values[1])
 
+    def ParkCar(self, regno, color):
+        for key, values in self.parking.items():
+            if values == []:
+                values.append(regno)
+                values.append(color)
+                print("Allocated slot number: ", key)
+                self.total_car += 1
+                return
+        print("Sorry, parking lot is full")
+
+    def LeaveParkingSlot(self, slot):
+        if self.parking[int(slot)] != []:
+            self.parking[int(slot)] = []
+            print("Slot number", slot, "is free")
+            self.total_car -= 1
+        else:
+            print("Slot number", slot, "is already free")
+
 
 if __name__ == "__main__":
     while(True):
         take = input().split(" ")
         if take[0] == 'create_parking_lot':
             NewParking = ParkingLot(take[1])
+
+        elif take[0] == 'park':
+            NewParking.ParkCar(take[1], take[2])
+
+        elif take[0] == 'leave':
+            NewParking.LeaveParkingSlot(take[1])
 
         elif take[0] == 'status':
             NewParking.PrintParkingLot()
