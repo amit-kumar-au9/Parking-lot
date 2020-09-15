@@ -82,6 +82,8 @@ if __name__ == "__main__":
             all_input_lines = input_file.readline()
             all_input_lines = all_input_lines.replace('\n', '')
             take = all_input_lines.split(" ")
+            if take[0] == '':
+                break
 
         if take[0] == 'create_parking_lot':
             NewParking = ParkingLot(take[1])
