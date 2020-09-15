@@ -70,8 +70,18 @@ class ParkingLot:
 
 
 if __name__ == "__main__":
+    a = int(input("Press 1 for Interative commands & Press 2 for File Commands: "))
+    if a == 2:
+        input_file = open(
+            "D:/Technical Stuffs/Attainu Course/Parking-lot/file.txt", "r")
     while(True):
-        take = input().split(" ")
+
+        if (a == 1):
+            take = input().split(" ")
+        elif (a == 2):
+            all_input_lines = input_file.readline()
+            take = all_input_lines.split(" ")
+
         if take[0] == 'create_parking_lot':
             NewParking = ParkingLot(take[1])
 
@@ -98,3 +108,6 @@ if __name__ == "__main__":
 
         else:
             print("Wrong input")
+            break
+    if a == 2:
+        input_file.close()
