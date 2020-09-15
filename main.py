@@ -14,10 +14,12 @@ class ParkingLot:
         print("Created a parking lot with", total_space * no_floor, "slots")
 
     def ParkCar(self, regno, color):
+        current_time = datetime.now().time()
         for key, values in self.parking.items():
             if values == []:
                 values.append(regno)
                 values.append(color)
+                values.append(current_time)
                 print("Allocated slot number: ", key)
                 self.total_car += 1
                 return
@@ -25,10 +27,19 @@ class ParkingLot:
 
     def LeaveParkingSlot(self, slot):
         if slot in self.parking.keys():
-            if self.parking[int(slot)] != []:
-                self.parking[int(slot)] = []
-                print("Slot number", slot, "is free")
+            if self.parking[slot] != []:
+                start = self.parking[slot]
+                start = start[2]
+                end = datetime.now().time()
+                t1 = timedelta(hours=start.hour,
+                               minutes=start.minute, seconds=start.second)
+                t2 = timedelta(
+                    hours=end.hour, minutes=end.minute, seconds=end.second)
+                duration = t2 - t1
+                print("Slot number", slot, "is free.")
+                print("Duration Parked", duration)
                 self.total_car -= 1
+                self.parking[slot] = []
             else:
                 print("Slot number", slot, "is already free")
         else:
@@ -38,10 +49,17 @@ class ParkingLot:
         if self.total_car == 0:
             print("Parking Slot is Empty")
             return
-        print("Slot No. Registration No Colour")
+        print("Slot No. Registration No Colour Entry_Time Duration")
         for key, values in self.parking.items():
             if values != []:
-                print(key, values[0], values[1])
+                start = values[2]
+                end = datetime.now().time()
+                t1 = timedelta(hours=start.hour,
+                               minutes=start.minute, seconds=start.second)
+                t2 = timedelta(
+                    hours=end.hour, minutes=end.minute, seconds=end.second)
+                duration = t2 - t1
+                print(key, values[0], values[1], values[2], duration)
 
     def FetchRegNoByColor(self, color):
         notFound = True
@@ -79,6 +97,7 @@ class ParkingLot:
 
 
 if __name__ == "__main__":
+    from datetime import datetime, timedelta
     a = int(input("Press 1 for Interative commands & Press 2 for File Commands: "))
     if a == 2:
         input_file = open(
@@ -96,9 +115,6 @@ if __name__ == "__main__":
 
         if take[0] == 'create_parking_lot':
             NewParking = ParkingLot(take[1])
-
-        elif take[0] == 'create_multi_level_parking_lot':
-            NewParking = ParkingLot(take[1], take[2])
 
         elif take[0] == 'park':
             NewParking.ParkCar(take[1], take[2])
