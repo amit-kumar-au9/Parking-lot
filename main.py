@@ -7,15 +7,6 @@ class ParkingLot:
             self.parking[i] = []
         print("Created a parking lot with", total_space, "slots")
 
-    def PrintParkingLot(self):
-        if self.total_car == 0:
-            print("Parking Slot is Empty")
-            return
-        print("Slot No. Registration No Colour")
-        for key, values in self.parking.items():
-            if values != []:
-                print(key, values[0], values[1])
-
     def ParkCar(self, regno, color):
         for key, values in self.parking.items():
             if values == []:
@@ -34,6 +25,49 @@ class ParkingLot:
         else:
             print("Slot number", slot, "is already free")
 
+    def PrintParkingLot(self):
+        if self.total_car == 0:
+            print("Parking Slot is Empty")
+            return
+        print("Slot No. Registration No Colour")
+        for key, values in self.parking.items():
+            if values != []:
+                print(key, values[0], values[1])
+
+    def FetchRegNoByColor(self, color):
+        notFound = True
+        for key, values in self.parking.items():
+            if self.parking[key] != []:
+                if self.parking[key][1] == color:
+                    if notFound:
+                        print(values[0], end="")
+                        notFound = False
+                    else:
+                        print(",", values[0])
+        if notFound:
+            print("Not found")
+
+    def FetchSlotByColor(self, color):
+        notFound = True
+        for key, values in self.parking.items():
+            if self.parking[key] != []:
+                if self.parking[key][1] == color:
+                    if notFound:
+                        print(key, end="")
+                        notFound = False
+                    else:
+                        print(",", key)
+        if notFound:
+            print("Not found")
+
+    def FetchSlotByRegNo(self, regno):
+        for key, values in self.parking.items():
+            if values != []:
+                if values[0] == regno:
+                    print(key)
+                    return
+        print("Not found")
+
 
 if __name__ == "__main__":
     while(True):
@@ -49,6 +83,15 @@ if __name__ == "__main__":
 
         elif take[0] == 'status':
             NewParking.PrintParkingLot()
+
+        elif take[0] == 'registration_numbers_for_cars_with_colour':
+            NewParking.FetchRegNoByColor(take[1])
+
+        elif take[0] == 'slot_numbers_for_cars_with_colour':
+            NewParking.FetchSlotByColor(take[1])
+
+        elif take[0] == 'slot_number_for_registration_number':
+            NewParking.FetchSlotByRegNo(take[1])
 
         elif take[0] == 'exit':
             break
