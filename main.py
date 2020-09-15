@@ -80,6 +80,7 @@ if __name__ == "__main__":
             take = input().split(" ")
         elif (a == 2):
             all_input_lines = input_file.readline()
+            all_input_lines = all_input_lines.replace('\n', '')
             take = all_input_lines.split(" ")
 
         if take[0] == 'create_parking_lot':
