@@ -1,11 +1,17 @@
 class ParkingLot:
-    def __init__(self, total_space):
+    def __init__(self, total_space, no_floor=1):
         self.parking = {}
         self.total_car = 0
         self.total_slot = total_space
-        for i in range(1, int(total_space)+1):
-            self.parking[i] = []
-        print("Created a parking lot with", total_space, "slots")
+        total_space = int(total_space)
+        no_floor = int(no_floor)
+        i, j = 1, 1
+        while (i <= total_space and j <= no_floor):
+            self.parking['Floor' + str(j) + 'Slot' + str(i)] = []
+            i += 1
+            if i == total_space:
+                j += 1
+        print("Created a parking lot with", total_space * no_floor, "slots")
 
     def ParkCar(self, regno, color):
         for key, values in self.parking.items():
@@ -18,12 +24,15 @@ class ParkingLot:
         print("Sorry, parking lot is full")
 
     def LeaveParkingSlot(self, slot):
-        if self.parking[int(slot)] != []:
-            self.parking[int(slot)] = []
-            print("Slot number", slot, "is free")
-            self.total_car -= 1
+        if slot in self.parking.keys():
+            if self.parking[int(slot)] != []:
+                self.parking[int(slot)] = []
+                print("Slot number", slot, "is free")
+                self.total_car -= 1
+            else:
+                print("Slot number", slot, "is already free")
         else:
-            print("Slot number", slot, "is already free")
+            print("Slot number", slot, "is not Present")
 
     def PrintParkingLot(self):
         if self.total_car == 0:
@@ -49,7 +58,7 @@ class ParkingLot:
 
     def FetchSlotByColor(self, color):
         notFound = True
-        for key, values in self.parking.items():
+        for key in self.parking:
             if self.parking[key] != []:
                 if self.parking[key][1] == color:
                     if notFound:
@@ -87,6 +96,9 @@ if __name__ == "__main__":
 
         if take[0] == 'create_parking_lot':
             NewParking = ParkingLot(take[1])
+
+        elif take[0] == 'create_multi_level_parking_lot':
+            NewParking = ParkingLot(take[1], take[2])
 
         elif take[0] == 'park':
             NewParking.ParkCar(take[1], take[2])
