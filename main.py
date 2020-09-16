@@ -7,23 +7,23 @@ class ParkingLot:
         no_floor = int(no_floor)
         i, j = 1, 1
         while (i <= total_space and j <= no_floor):
-            self.parking['Floor' + str(j) + 'Slot' + str(i)] = []
+            self.parking[('Floor' + str(j) + 'Slot' + str(i)).lower()] = []
             i += 1
             if i == total_space:
                 j += 1
         print("Created a parking lot with", total_space * no_floor, "slots")
 
-    def ParkCar(self, regno, color):
+    def ParkCar(self, regno, color, email):
         current_time = datetime.now().time()
         for key, values in self.parking.items():
             if values == []:
                 values.append(regno)
                 values.append(color)
                 values.append(current_time)
+                values.append(email)
                 print("Allocated slot number: ", key)
                 self.total_car += 1
                 return
-        print("Sorry, parking lot is full")
 
     def LeaveParkingSlot(self, slot):
         if slot in self.parking.keys():
@@ -46,10 +46,7 @@ class ParkingLot:
             print("Slot number", slot, "is not Present")
 
     def PrintParkingLot(self):
-        if self.total_car == 0:
-            print("Parking Slot is Empty")
-            return
-        print("Slot No. Registration No Colour Entry_Time Duration")
+        print("Slot No. Registration No Colour Entry_Time Duration Email")
         for key, values in self.parking.items():
             if values != []:
                 start = values[2]
@@ -59,7 +56,21 @@ class ParkingLot:
                 t2 = timedelta(
                     hours=end.hour, minutes=end.minute, seconds=end.second)
                 duration = t2 - t1
-                print(key, values[0], values[1], values[2], duration)
+                print(key, values[0], values[1],
+                      values[2].strftime("%H:%M:%S"), duration, values[3])
+
+    def isNotFull(self):
+        return 1 if self.total_car != self.total_slot else 0
+
+    def isEmpty(self):
+        return 1 if self.total_car == 0 else 0
+
+    def carNotExist(self, regno):
+        for values in self.parking:
+            if values != []:
+                if values[0] == regno:
+                    return 0
+        return 1
 
     def FetchRegNoByColor(self, color):
         notFound = True
@@ -105,40 +116,59 @@ if __name__ == "__main__":
     while(True):
 
         if (a == 1):
-            take = input().split(" ")
+            take = input().lower().split(" ")
         elif (a == 2):
             all_input_lines = input_file.readline()
-            all_input_lines = all_input_lines.replace('\n', '')
+            all_input_lines = all_input_lines.lower().replace('\n', '')
             take = all_input_lines.split(" ")
             if take[0] == '':
                 break
+        try:
+            if take[0] == 'create_parking_lot':
+                NewParking = ParkingLot(take[1])
 
-        if take[0] == 'create_parking_lot':
-            NewParking = ParkingLot(take[1])
+            elif take[0] == 'park':
+                if(NewParking.isNotFull()):
+                    if(NewParking.carNotExist(take[1])):
+                        NewParking.ParkCar(take[1], take[2], take[3])
+                    else:
+                        print("Sorry, Same Car Already Park")
+                else:
+                    print("Sorry, parking lot is full")
 
-        elif take[0] == 'park':
-            NewParking.ParkCar(take[1], take[2])
+            elif take[0] == 'leave':
+                if(NewParking.isEmpty()):
+                    print("Parking Slot is Empty")
+                else:
+                    NewParking.LeaveParkingSlot(take[1])
 
-        elif take[0] == 'leave':
-            NewParking.LeaveParkingSlot(take[1])
+            elif take[0] == 'status':
+                if(NewParking.isEmpty()):
+                    print("Parking Slot is Empty")
+                else:
+                    NewParking.PrintParkingLot()
 
-        elif take[0] == 'status':
-            NewParking.PrintParkingLot()
+            elif take[0] == 'registration_numbers_for_cars_with_colour':
+                if(NewParking.isEmpty()):
+                    print("Parking Slot is Empty")
+                else:
+                    NewParking.FetchRegNoByColor(take[1])
 
-        elif take[0] == 'registration_numbers_for_cars_with_colour':
-            NewParking.FetchRegNoByColor(take[1])
+            elif take[0] == 'slot_numbers_for_cars_with_colour':
+                if(NewParking.isEmpty()):
+                    print("Parking Slot is Empty")
+                else:
+                    NewParking.FetchSlotByColor(take[1])
 
-        elif take[0] == 'slot_numbers_for_cars_with_colour':
-            NewParking.FetchSlotByColor(take[1])
+            elif take[0] == 'slot_number_for_registration_number':
+                if(NewParking.isEmpty()):
+                    print("Parking Slot is Empty")
+                else:
+                    NewParking.FetchSlotByRegNo(take[1])
 
-        elif take[0] == 'slot_number_for_registration_number':
-            NewParking.FetchSlotByRegNo(take[1])
-
-        elif take[0] == 'exit':
-            break
-
-        else:
-            print("Wrong input")
-            break
+            elif take[0] == 'exit':
+                break
+        except Exception:
+            print("Wrong input || Error Occured")
     if a == 2:
         input_file.close()
