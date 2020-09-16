@@ -1,14 +1,14 @@
 create_parking_lot 6
-park KA-01-HH-1234 White amit@xyz.com
-park KA-01-HH-9999 White amit@xyz.com
-park KA-01-BB-0001 Black amit@xyz.com
-park KA-01-HH-7777 Red amit@xyz.com
-park KA-01-HH-2701 Blue amit@xyz.com
-park KA-01-HH-3141 Black amit@xyz.com
+park KA-01-HH-1234 White amitkumar66966@gmail.com
+park KA-01-HH-9999 White amitkumar66966@gmail.com
+park KA-01-BB-0001 Black amitkumar66966@gmail.com
+park KA-01-HH-7777 Red amitkumar66966@gmail.com
+park KA-01-HH-2701 Blue amitkumar66966@gmail.com
+park KA-01-HH-3141 Black amitkumar66966@gmail.com
 leave Floor1Slot4
 status
-park KA-01-P-333 White
-park DL-12-AA-9999 White
+park KA-01-P-333 White amitkumar66966@gmail.com
+park DL-12-AA-9999 White amitkumar66966@gmail.com
 registration_numbers_for_cars_with_colour White
 slot_numbers_for_cars_with_colour White
 status

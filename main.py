@@ -28,8 +28,10 @@ class ParkingLot:
     def LeaveParkingSlot(self, slot):
         if slot in self.parking.keys():
             if self.parking[slot] != []:
-                start = self.parking[slot]
-                start = start[2]
+                car_data = self.parking[slot]
+                start = car_data[2]
+                email = car_data[3]
+                self.sendEmail(email)
                 end = datetime.now().time()
                 t1 = timedelta(hours=start.hour,
                                minutes=start.minute, seconds=start.second)
@@ -106,9 +108,47 @@ class ParkingLot:
                     return
         print("Not found")
 
+    def sendEmail(self, email):
+        gmail_user = 'anonymous.people.one@gmail.com'
+        gmail_password = 'slxfyyaaemsukkdv'
+
+        sent_from = gmail_user
+        to = [email]
+        subject = 'Parking Lot Invoice'
+        body = 'This is a testing mail'
+
+        email_text = """\
+        From: %s
+        To: %s
+        Subject: %s
+
+        %s
+        """ % (sent_from, ", ".join(to), subject, body)
+
+        try:
+            server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            server.ehlo()
+            server.login(gmail_user, gmail_password)
+            server.sendmail(sent_from, to, email_text)
+            server.close()
+            print('Email sent!')
+        except Exception:
+            print('Something went wrong...')
+
+
+def isEmailValid(email):
+    regex = "^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$"
+    if(re.search(regex, email)):
+        return 1
+    else:
+        return 0
+
 
 if __name__ == "__main__":
     from datetime import datetime, timedelta
+    import re
+    import smtplib
+
     a = int(input("1 for Terminal Input and 2 for Executing File"))
     if a == 2:
         input_file = open(
@@ -129,8 +169,11 @@ if __name__ == "__main__":
 
             elif take[0] == 'park':
                 if(NewParking.isNotFull()):
-                    if(NewParking.carNotExist(take[1])):
-                        NewParking.ParkCar(take[1], take[2], take[3])
+                    if NewParking.carNotExist(take[1]):
+                        if isEmailValid(take[3]):
+                            NewParking.ParkCar(take[1], take[2], take[3])
+                        else:
+                            print("Email address is not valid")
                     else:
                         print("Sorry, Same Car Already Park")
                 else:
