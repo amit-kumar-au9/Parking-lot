@@ -31,7 +31,7 @@ class ParkingLot:
                 car_data = self.parking[slot]
                 start = car_data[2]
                 email = car_data[3]
-                self.sendEmail(email)
+                sendEmail(email)
                 end = datetime.now().time()
                 t1 = timedelta(hours=start.hour,
                                minutes=start.minute, seconds=start.second)
@@ -108,16 +108,17 @@ class ParkingLot:
                     return
         print("Not found")
 
-    def sendEmail(self, email):
-        gmail_user = 'anonymous.people.one@gmail.com'
-        gmail_password = 'slxfyyaaemsukkdv'
 
-        sent_from = gmail_user
-        to = [email]
-        subject = 'Parking Lot Invoice'
-        body = 'This is a testing mail'
+def sendEmail(email):
+    gmail_user = 'anonymous.people.one@gmail.com'
+    gmail_password = 'slxfyyaaemsukkdv'
 
-        email_text = """\
+    sent_from = gmail_user
+    to = [email]
+    subject = 'Parking Lot Invoice'
+    body = 'This is a testing mail'
+
+    email_text = """\
         From: %s
         To: %s
         Subject: %s
@@ -125,15 +126,15 @@ class ParkingLot:
         %s
         """ % (sent_from, ", ".join(to), subject, body)
 
-        try:
-            server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-            server.ehlo()
-            server.login(gmail_user, gmail_password)
-            server.sendmail(sent_from, to, email_text)
-            server.close()
-            print('Email sent!')
-        except Exception:
-            print('Something went wrong...')
+    try:
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.ehlo()
+        server.login(gmail_user, gmail_password)
+        server.sendmail(sent_from, to, email_text)
+        server.close()
+        print('Check Your Email for Bill Invoice')
+    except Exception:
+        print('Error Occured while sending email')
 
 
 def isEmailValid(email):
@@ -154,7 +155,6 @@ if __name__ == "__main__":
         input_file = open(
             "D:/Technical Stuffs/Attainu Course/Parking-lot/file.txt", "r")
     while(True):
-
         if (a == 1):
             take = input().lower().split(" ")
         elif (a == 2):
