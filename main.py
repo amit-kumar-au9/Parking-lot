@@ -98,7 +98,7 @@ class ParkingLot:
 
 if __name__ == "__main__":
     from datetime import datetime, timedelta
-    a = int(input("Press 1 for Interative commands & Press 2 for File Commands: "))
+    a = int(input("1 for Terminal Input and 2 for Executing File"))
     if a == 2:
         input_file = open(
             "D:/Technical Stuffs/Attainu Course/Parking-lot/file.txt", "r")
