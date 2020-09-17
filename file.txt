@@ -1,9 +1,10 @@
-create_parking_lot 6
+create_parking_lot 6 1
+status
 park KA-01-HH-1234 White amitkumar66966@gmail.com
 park KA-01-HH-9999 White amitkumar66966@gmail.com
 park KA-01-BB-0001 Black amitkumar66966@gmail.com
 park KA-01-HH-7777 Red amitkumar66966@gmail.com
-park KA-01-HH-2701 Blue amitkumar66966@gmail.com
+park KA-01-HH-3141 Blue amitkumar66966@gmail.com
 park KA-01-HH-3141 Black amitkumar66966@gmail.com
 leave Floor1Slot4
 status

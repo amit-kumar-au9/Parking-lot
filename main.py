@@ -1,40 +1,44 @@
 class ParkingLot:
-    def __init__(self, total_space, no_floor=1):
+    def __init__(self, total_space, no_floor=2):
         self.parking = {}
-        self.total_car = 0
-        self.total_slot = total_space
         total_space = int(total_space)
         no_floor = int(no_floor)
         i, j = 1, 1
-        while (i <= total_space and j <= no_floor):
-            self.parking[('Floor' + str(j) + 'Slot' + str(i)).lower()] = []
-            i += 1
+        while (j <= no_floor):
+            self.parking[('Floor' + str(j) + 'Slot' + str(i)).lower()] = {}
             if i == total_space:
                 j += 1
-        print("Created a parking lot with", total_space * no_floor, "slots")
+                i = 1
+            else:
+                i += 1
+        print("Created a parking lot with", len(self.parking), "slots")
+        self.total_car = 0
+        self.total_slot = len(self.parking)
 
     def ParkCar(self, regno, color, email):
         current_time = datetime.now().time()
         for key, values in self.parking.items():
-            if values == []:
-                values.append(regno)
-                values.append(color)
-                values.append(current_time)
-                values.append(email)
+            if values == {}:
+                values['regno'] = regno
+                values['color'] = color
+                values['current_time'] = current_time
+                values['email'] = email
+
                 print("Allocated slot number: ", key)
                 self.total_car += 1
                 return
 
     def LeaveParkingSlot(self, slot):
         if slot in self.parking.keys():
-            if self.parking[slot] != []:
+            if self.parking[slot] != {}:
                 car_data = self.parking[slot]
-                duration = self.timeDuration(car_data[2])
-                sendEmail(car_data[0], car_data[1], duration, car_data[3])
+                duration = self.timeDuration(car_data['current_time'])
+                sendEmail(car_data['regno'],
+                          car_data['color'], duration, car_data['email'])
                 print("Slot number", slot, "is free.")
                 print("Duration Parked", duration)
                 self.total_car -= 1
-                self.parking[slot] = []
+                self.parking[slot] = {}
             else:
                 print("Slot number", slot, "is already free")
         else:
@@ -51,42 +55,30 @@ class ParkingLot:
     def PrintParkingLot(self):
         print("Slot No. Registration No Colour Entry_Time Duration Email")
         for key, values in self.parking.items():
-            if values != []:
-                duration = self.timeDuration(values[2])
-                print(key, values[0], values[1],
-                      values[2].strftime("%H:%M:%S"), duration, values[3])
-
-    def isNotFull(self):
-        return 1 if self.total_car != self.total_slot else 0
-
-    def isEmpty(self):
-        return 1 if self.total_car == 0 else 0
-
-    def carNotExist(self, regno):
-        for values in self.parking:
-            if values != []:
-                if values[0] == regno:
-                    return 0
-        return 1
+            if values != {}:
+                duration = self.timeDuration(values['current_time'])
+                curr_time = values['current_time'].strftime("%H:%M:%S")
+                print(key, values['regno'], values['color'],
+                      curr_time, duration, values['email'])
 
     def FetchRegNoByColor(self, color):
         notFound = True
         for key, values in self.parking.items():
-            if self.parking[key] != []:
-                if self.parking[key][1] == color:
+            if self.parking[key] != {}:
+                if self.parking[key]['color'] == color:
                     if notFound:
-                        print(values[0], end="")
+                        print(values['regno'], end="")
                         notFound = False
                     else:
-                        print(",", values[0])
+                        print(",", values['regno'])
         if notFound:
             print("Not found")
 
     def FetchSlotByColor(self, color):
         notFound = True
         for key in self.parking:
-            if self.parking[key] != []:
-                if self.parking[key][1] == color:
+            if self.parking[key] != {}:
+                if self.parking[key]['color'] == color:
                     if notFound:
                         print(key, end="")
                         notFound = False
@@ -97,11 +89,24 @@ class ParkingLot:
 
     def FetchSlotByRegNo(self, regno):
         for key, values in self.parking.items():
-            if values != []:
-                if values[0] == regno:
+            if values != {}:
+                if values['regno'] == regno:
                     print(key)
                     return
         print("Not found")
+
+    def isNotFull(self):
+        return 1 if self.total_car != self.total_slot else 0
+
+    def isEmpty(self):
+        return 1 if self.total_car == 0 else 0
+
+    def carNotExist(self, regno):
+        for key in self.parking:
+            if self.parking[str(key)] != {}:
+                if self.parking[str(key)]['regno'] == regno:
+                    return 0
+        return 1
 
 
 def sendEmail(regno, color, duration, receiver):
@@ -187,10 +192,10 @@ if __name__ == "__main__":
                 break
         try:
             if take[0] == 'create_parking_lot':
-                NewParking = ParkingLot(take[1])
+                NewParking = ParkingLot(take[1], take[2])
 
             elif take[0] == 'park':
-                if(NewParking.isNotFull()):
+                if NewParking.isNotFull():
                     if NewParking.carNotExist(take[1]):
                         if isEmailValid(take[3]):
                             NewParking.ParkCar(take[1], take[2], take[3])
@@ -233,6 +238,7 @@ if __name__ == "__main__":
 
             elif take[0] == 'exit':
                 break
+            print()
         except Exception:
             print("Wrong input || Error Occured")
     if a == 2:
