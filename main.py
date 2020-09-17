@@ -29,15 +29,8 @@ class ParkingLot:
         if slot in self.parking.keys():
             if self.parking[slot] != []:
                 car_data = self.parking[slot]
-                start = car_data[2]
-                email = car_data[3]
-                sendEmail(email)
-                end = datetime.now().time()
-                t1 = timedelta(hours=start.hour,
-                               minutes=start.minute, seconds=start.second)
-                t2 = timedelta(
-                    hours=end.hour, minutes=end.minute, seconds=end.second)
-                duration = t2 - t1
+                duration = self.timeDuration(car_data[2])
+                sendEmail(car_data[0], car_data[1], duration, car_data[3])
                 print("Slot number", slot, "is free.")
                 print("Duration Parked", duration)
                 self.total_car -= 1
@@ -47,17 +40,19 @@ class ParkingLot:
         else:
             print("Slot number", slot, "is not Present")
 
+    def timeDuration(self, start):
+        end = datetime.now().time()
+        t1 = timedelta(hours=start.hour,
+                       minutes=start.minute, seconds=start.second)
+        t2 = timedelta(
+            hours=end.hour, minutes=end.minute, seconds=end.second)
+        return t2 - t1
+
     def PrintParkingLot(self):
         print("Slot No. Registration No Colour Entry_Time Duration Email")
         for key, values in self.parking.items():
             if values != []:
-                start = values[2]
-                end = datetime.now().time()
-                t1 = timedelta(hours=start.hour,
-                               minutes=start.minute, seconds=start.second)
-                t2 = timedelta(
-                    hours=end.hour, minutes=end.minute, seconds=end.second)
-                duration = t2 - t1
+                duration = self.timeDuration(values[2])
                 print(key, values[0], values[1],
                       values[2].strftime("%H:%M:%S"), duration, values[3])
 
@@ -109,28 +104,53 @@ class ParkingLot:
         print("Not found")
 
 
-def sendEmail(email):
-    gmail_user = 'anonymous.people.one@gmail.com'
-    gmail_password = 'slxfyyaaemsukkdv'
+def sendEmail(regno, color, duration, receiver):
+    sender = 'anonymous.people.one@gmail.com'
+    password = 'slxfyyaaemsukkdv'
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Car Parking Checkout"
+    message["From"] = 'Car Parking'
+    message["To"] = receiver
+    regno = regno.upper()
+    color = color.upper()
+    # write the plain text part
+    text = """\
+    Hi User,
+    Check out the details of your car parking:
+    Registration Number :{}
+    Color :{}
+    Duration :{}
 
-    sent_from = gmail_user
-    to = [email]
-    subject = 'Parking Lot Invoice'
-    body = 'This is a testing mail'
-
-    email_text = """\
-        From: %s
-        To: %s
-        Subject: %s
-
-        %s
-        """ % (sent_from, ", ".join(to), subject, body)
+    Feel free to let us know for any query!
+    We Hope To See You Soon
+    Thank You
+    """.format(regno, color, duration)
+    # write the HTML part
+    html = """\
+    <html>
+    <body>
+        <h3 style='color:#4472C4;'>Hi User,</h3>
+        <p>Check out the details of your car parking:&nbsp;&nbsp;&nbsp;</p>
+        <p><strong>Registration Number : </strong>{}</p>
+        <p><strong>Color : </strong>{}</p>
+        <p><strong>Duration : </strong>{}</p>
+        <p><strong>&nbsp;</strong></p>
+        <p style='color:green;'>Feel free to let us know for any query!</p>
+        <p style='color:green;'>We Hope To See You Soon Again</p>
+        <p><em style='color:red;'><b>Thank You</b></em></p>
+    </body>
+    </html>
+    """.format(regno, color, duration)
+    part1 = MIMEText(text, "plain")
+    part2 = MIMEText(html, "html")
+    message.attach(part1)
+    message.attach(part2)
 
     try:
         server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
         server.ehlo()
-        server.login(gmail_user, gmail_password)
-        server.sendmail(sent_from, to, email_text)
+        server.login(sender, password)
+        server.sendmail(sender, receiver, message.as_string())
         server.close()
         print('Check Your Email for Bill Invoice')
     except Exception:
@@ -149,6 +169,8 @@ if __name__ == "__main__":
     from datetime import datetime, timedelta
     import re
     import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
 
     a = int(input("1 for Terminal Input and 2 for Executing File"))
     if a == 2:
