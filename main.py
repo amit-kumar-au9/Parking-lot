@@ -1,5 +1,5 @@
 class ParkingLot:
-    def __init__(self, total_space, no_floor=2):
+    def make_parking(self, total_space=1, no_floor=1):
         self.parking = {}
         total_space = int(total_space)
         no_floor = int(no_floor)
@@ -176,6 +176,7 @@ if __name__ == "__main__":
     import smtplib
     from email.mime.text import MIMEText
     from email.mime.multipart import MIMEMultipart
+    NewParking = ParkingLot()
 
     a = int(input("1 for Terminal Input and 2 for Executing File"))
     if a == 2:
@@ -192,7 +193,12 @@ if __name__ == "__main__":
                 break
         try:
             if take[0] == 'create_parking_lot':
-                NewParking = ParkingLot(take[1], take[2])
+                if len(take) == 2:
+                    NewParking.make_parking(take[1])
+                elif len(take) == 1:
+                    NewParking.make_parking()
+                else:
+                    NewParking.make_parking(take[1], take[2])
 
             elif take[0] == 'park':
                 if NewParking.isNotFull():
