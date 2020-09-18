@@ -52,6 +52,18 @@ Extra Features:
 
 4. Getting an E-mail notification while leaving the parking lot about your time duration and other details.
 
+## EXPLAINING COMMANDS
+
+| Feature                             | Command                                                 | Eg                                                |
+| ----------------------------------- | ------------------------------------------------------- | ------------------------------------------------- |
+| Create Parking                      | create_parking_lot 'no of slot per floor' 'no of floor' | create_parking_lot 6 1                            |
+| Check Parking Lot Status            | status                                                  | status                                            |
+| Park a new car                      | park 'registration no' 'car color' 'email address'      | park KA-01-HH-1234 White amitkumar66966@gmail.com |
+| Leave a car                         | leave 'slot no'                                         | leave Floor1Slot4                                 |
+| Search registrtaion no. by color    | registration_numbers_for_cars_with_colour 'Car color'   | registration_numbers_for_cars_with_colour White   |
+| Search slot no. by color            | slot_numbers_for_cars_with_colour 'Car Color'           | slot_numbers_for_cars_with_colour White           |
+| Search slot no. by registration no. | slot_number_for_registration_number 'Registration No.'  | slot_number_for_registration_number KA-01-HH-1234 |
+
 ## USAGE
 
 ---
